@@ -1,31 +1,34 @@
 #include <windows.h>
 #include <string>
-#include <map>
 #include <fstream>
+#include <map>
+#include <vector>
+
+#include "resource.h"
 #include "logger.hpp"
 #include "version_info.h"
 
 // Constants
-const LPCSTR LOG_FILENAME{ "br-quartet-launcher.log" };
-const LPCSTR WINDOW_NAME{ "BLUE REFLECTION Quartet" };
+constexpr LPCSTR LOG_FILENAME{ "br-quartet-launcher.log" };
+constexpr LPCSTR WINDOW_NAME{ "BLUE REFLECTION Quartet" };
 const std::string WINDOW_CLASS_NAME{ "BlueReflectionCustomWindow" };
-const LPCSTR CHOICE_QUARTET{ "quartet" };
-const LPCSTR CHOICE_BR{ "br" };
-const LPCSTR CHOICE_RAY{ "ray" };
-const LPCSTR CHOICE_SUN{ "sun" };
-const LPCSTR CHOICE_TIE{ "tie" };
-const LPCSTR DLL_QUARTET{ "B0.dll" };
-const LPCSTR DLL_BR{ "B1.dll" };
-const LPCSTR DLL_RAY{ "B2.dll" };
-const LPCSTR DLL_SUN{ "B3.dll" };
-const LPCSTR DLL_TIE{ "B4.dll" };
+constexpr LPCSTR CHOICE_QUARTET{ "quartet" };
+constexpr LPCSTR CHOICE_BR{ "br" };
+constexpr LPCSTR CHOICE_RAY{ "ray" };
+constexpr LPCSTR CHOICE_SUN{ "sun" };
+constexpr LPCSTR CHOICE_TIE{ "tie" };
+constexpr LPCSTR DLL_QUARTET{ "B0.dll" };
+constexpr LPCSTR DLL_BR{ "B1.dll" };
+constexpr LPCSTR DLL_RAY{ "B2.dll" };
+constexpr LPCSTR DLL_SUN{ "B3.dll" };
+constexpr LPCSTR DLL_TIE{ "B4.dll" };
 
 // Game function signatures
-typedef void (*FuncDllInitialize)(HINSTANCE, HINSTANCE, LPSTR, int);
-typedef int (*FuncDllExecute)(HINSTANCE, HINSTANCE, LPSTR, int);
+typedef void (*FuncDllInitialize)(HWND*);
+typedef int (*FuncDllExecute)(void);
 typedef LRESULT(CALLBACK* FuncDllWndProc)(HWND, UINT, WPARAM, LPARAM);
 
-// WinAPI exception handler
+// Global exception handler
 static LONG WINAPI CrashHandler(EXCEPTION_POINTERS* ExceptionInfo) {
     std::ofstream crashLog(LOG_FILENAME, std::ios::app);
 
@@ -38,11 +41,7 @@ static LONG WINAPI CrashHandler(EXCEPTION_POINTERS* ExceptionInfo) {
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
-int WINAPI WinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPSTR lpCmdLine,
-    _In_ int nShowCmd)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
     SetUnhandledExceptionFilter(CrashHandler);
 
@@ -50,13 +49,11 @@ int WINAPI WinMain(
     bool isFirstLaunch = (__argc <= 1);
     Logger::Init(LOG_FILENAME, isFirstLaunch);
 
-    LPSTR cmdLine = GetCommandLineA();
-
     spdlog::info("==================================================");
     spdlog::info("br-quartet-launcher {} initialized", APP_PRODUCT_VERSION_A);
-    spdlog::info("Command line: {}", cmdLine);
+    spdlog::info("Command line: {}", GetCommandLineA());
 
-    // Arg
+    // Game mapping
     std::map<std::string, std::string> games = {
         {CHOICE_QUARTET, DLL_QUARTET},
         {CHOICE_BR,      DLL_BR},
@@ -67,6 +64,7 @@ int WINAPI WinMain(
 
     std::string choice = CHOICE_QUARTET;
 
+    // Handle initial argument for direct game boot
     if (__argc > 1) {
         choice = __argv[1];
 
@@ -80,7 +78,7 @@ int WINAPI WinMain(
     std::string dllName = games[choice];
 
     spdlog::info("Current target: {}", choice);
-    spdlog::info("Loading '{}'...", dllName);
+    spdlog::info("Loading '{}' into memory...", dllName);
 
     HMODULE hModule = LoadLibraryA(dllName.c_str());
 
@@ -101,19 +99,20 @@ int WINAPI WinMain(
         return 1;
     }
 
-    spdlog::info("Calling DllInitialize()...");
-
-    DllInitialize(hInstance, NULL, cmdLine, nShowCmd);
-
-    // Dynamic class name
+    // Dynamic class name mapped to the current choice
     std::string className = WINDOW_CLASS_NAME + "_" + choice;
 
     WNDCLASSEXA wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEXA);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = DllWndProc;
+    wc.lpfnWndProc = DllWndProc; // Injecting the game module window procedure
     wc.hInstance = hInstance;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+    // Assign window icons
+    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON));
+    wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON));
+
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wc.lpszClassName = className.c_str();
 
@@ -136,68 +135,70 @@ int WINAPI WinMain(
         NULL
     );
 
+    int exitCode = -1;
+
     if (hWnd) {
         ShowWindow(hWnd, nShowCmd);
         UpdateWindow(hWnd);
+
+        // Initialize with the window handle
+        spdlog::info("Calling DllInitialize()...");
+        DllInitialize(&hWnd);
+
+        // Block execution here
+        // The game runs its own loop internally
+        spdlog::info("Calling DllExecute(). Game is running...");
+        exitCode = DllExecute();
+
+        spdlog::info("Game closed (exit code: {})", exitCode);
+
+        // Destroy the window safely before unloading the DLL
+        if (IsWindow(hWnd)) {
+            DestroyWindow(hWnd);
+
+            spdlog::info("The window fell into the void!");
+        }
+    }
+    else {
+        spdlog::error("Failed to create window. Error: {}", GetLastError());
     }
 
-    spdlog::info("Calling DllExecute(). Game is running...");
-
-    // Blocks execution!
-    int exitCode = DllExecute(hInstance, NULL, cmdLine, nShowCmd);
-
-    spdlog::info("Game closed (exit code: {})", exitCode);
-
-    // Destroy and unregister current window safely
-    if (hWnd != NULL && IsWindow(hWnd)) {
-        DestroyWindow(hWnd);
-
-        spdlog::info("The window fell into the void!");
-    }
-
+    // Cleanup
     UnregisterClassA(className.c_str(), hInstance);
     FreeLibrary(hModule);
 
-    // Next action selector
-    std::string nextArg = "";
+    // Game swap logic
+    std::string nextChoice = "";
 
     if (choice == CHOICE_QUARTET && exitCode > 1) {
         switch (exitCode) {
-        case 2:
-            nextArg = CHOICE_BR;
-            break;
-        case 3:
-            nextArg = CHOICE_RAY;
-            break;
-        case 4:
-            nextArg = CHOICE_SUN;
-            break;
-        case 5:
-            nextArg = CHOICE_TIE;
-            break;
-        default:
-            nextArg = "";
-            break;
+        case 2: nextChoice = CHOICE_BR; break;
+        case 3: nextChoice = CHOICE_RAY; break;
+        case 4: nextChoice = CHOICE_SUN; break;
+        case 5: nextChoice = CHOICE_TIE; break;
+        default: nextChoice = ""; break;
         }
     }
     else if (choice != CHOICE_QUARTET && exitCode == 1) {
-        // RETURN TO TOP (B0.dll)
-        nextArg = CHOICE_QUARTET;
+        // Return to the main launcher menu (B0.dll)
+        nextChoice = CHOICE_QUARTET;
     }
 
-    if (!nextArg.empty()) {
-        // Spawn a fresh process for the next state
-        spdlog::info("Spawning process for target: {}", nextArg);
+    if (!nextChoice.empty()) {
+        spdlog::info("Spawning fresh process for target: {}", nextChoice);
 
         char szPath[MAX_PATH];
         GetModuleFileNameA(NULL, szPath, MAX_PATH);
 
-        std::string cmdLine = std::string("\"") + szPath + "\" " + nextArg;
+        std::string cmdLineStr = "\"" + std::string(szPath) + "\" " + nextChoice;
+
+        std::vector<char> cmdBuffer(cmdLineStr.begin(), cmdLineStr.end());
+        cmdBuffer.push_back('\0');
 
         STARTUPINFOA si = { sizeof(si) };
         PROCESS_INFORMATION pi;
 
-        if (CreateProcessA(szPath, (LPSTR)cmdLine.c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+        if (CreateProcessA(szPath, cmdBuffer.data(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
 
@@ -208,7 +209,7 @@ int WINAPI WinMain(
         }
     }
 
-    spdlog::info("Exiting...");
+    spdlog::info("Exiting launcher...");
 
     return 0;
 }

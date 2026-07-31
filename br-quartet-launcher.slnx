@@ -6,6 +6,8 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
+    <File Path="vcpkg-configuration.json" />
+    <File Path="vcpkg.json" />
   </Folder>
   <Project Path="br-quartet-launcher\br-quartet-launcher.vcxproj" Id="3047b48f-564c-480c-b328-9470d958cbbf" />
 </Solution>
