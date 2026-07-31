@@ -45,9 +45,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
     SetUnhandledExceptionFilter(CrashHandler);
 
-    // Truncates the log on first launch only
-    bool isFirstLaunch = (__argc <= 1);
-    Logger::Init(LOG_FILENAME, isFirstLaunch);
+    Logger::Init(LOG_FILENAME, true);
 
     spdlog::info("==================================================");
     spdlog::info("br-quartet-launcher {} initialized", APP_PRODUCT_VERSION_A);
