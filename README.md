@@ -32,7 +32,7 @@ If you want to boot straight into a specific game in the collection without havi
   <img src=".github/images/steam_launch_options.png">
 </p>
 
-## Available Arguments:
+## Available Arguments
 * `quartet` (Default) — Loads the main collection launcher (`B0.dll`).
 * `br` — Loads BLUE REFLECTION (`B1.dll`).
 * `ray` — Loads BLUE REFLECTION: Ray (`B2.dll`).
