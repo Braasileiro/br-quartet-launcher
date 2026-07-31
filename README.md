@@ -1,11 +1,11 @@
 # br-quartet-launcher
 A lightweight, custom C++ written launcher for **BLUE REFLECTION Quartet** designed to prevent startup crashes caused by **RTSS** (Rivatuner Statistics Server) during game initialization.
 
-* Direct game booting: Dynamically loads the specific game modules (`B0.dll` through `B4.dll`) depending on the selected arguments.
+* **Direct game booting**: Dynamically loads the specific game modules (`B0.dll` through `B4.dll`) depending on the selected arguments.
 
-* RTSS compatibility: Prevents startup crashes associated with RTSS and possibly other overlays by managing window creation, game exported procedure callbacks and process lifecycle.
+* **RTSS compatibility**: Prevents startup crashes associated with RTSS and possibly other overlays by managing window creation, game exported procedure callbacks and process lifecycle.
 
-* Game swap: Handles internal return codes (`RETURN TO TOP` and `EXIT GAME`).
+* **Game swap**: Handles internal return codes (`RETURN TO TOP` and `EXIT GAME`).
 
 ## Installation
 1. Download the latest [release](https://github.com/Braasileiro/br-quartet-launcher/releases/latest).
