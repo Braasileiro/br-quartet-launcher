@@ -2,11 +2,11 @@
 A lightweight, custom C++ written launcher for **BLUE REFLECTION Quartet** designed to prevent startup crashes caused by **RTSS** (Rivatuner Statistics Server) or similar overlay tools during game initialization.
 
 ## What It Does
-* Game DLL loading: Dynamically loads the specific game or launcher component modules (`B0.dll` through `B4.dll`) depending on the selected arguments.
+* Game DLL loading: Dynamically loads the specific game modules (`B0.dll` through `B4.dll`) depending on the selected arguments.
 
 * RTSS compatibility: Bypasses initialization crashes associated with RivaTuner and similar overlays by managing window creation, game exported procedure callbacks and process lifecycle.
 
-* Game swap: Handles internal return codes (Return to Top or Quit).
+* Game swap: Handles internal return codes (`RETURN TO TOP` and `EXIT GAME`).
 
 ## How to Install and Use
 1. Backup the Original Executable:
@@ -32,9 +32,9 @@ If you want to boot straight into a specific game in the collection without havi
   <img src=".github/images/steam_launch_options.png">
 </p>
 
-### Available Arguments:
+## Available Arguments:
 * `quartet` (Default) — Loads the main collection launcher (`B0.dll`).
 * `br` — Loads BLUE REFLECTION (`B1.dll`).
-* `ray` — Loads BLUE REFLECTION Ray (`B2.dll`).
-* `sun` — Loads BLUE REFLECTION Sun (`B3.dll`).
-* `tie` — Loads BLUE REFLECTION Tie (`B4.dll`).
+* `ray` — Loads BLUE REFLECTION: Ray (`B2.dll`).
+* `sun` — Loads BLUE REFLECTION: Sun (`B3.dll`).
+* `tie` — Loads BLUE REFLECTION: Second Light (`B4.dll`).
