@@ -7,6 +7,8 @@ A lightweight, custom C++ written launcher for **BLUE REFLECTION Quartet** desig
 
 * **Game swap**: Handles internal return codes (`RETURN TO TOP` and `EXIT GAME`).
 
+**Tested to resolve the crash issue when RTSS is open, but may also resolve the issue for other similar software.**
+
 ## Installation
 1. Download the latest [release](https://github.com/Braasileiro/br-quartet-launcher/releases/latest).
 2. Backup the original executable
