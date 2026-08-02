@@ -61,14 +61,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     // Initialize global exception handler
     SetUnhandledExceptionFilter(CrashHandler);
 
-    // COM initialize
-    CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
+    // Initialize global logger
     Logger::Init(LOG_FILENAME, true);
-
     spdlog::info("=====================================");
     spdlog::info("br-quartet-launcher {} initialized", APP_PRODUCT_VERSION_A);
     spdlog::info("Command line: {}", GetCommandLineA());
+
+    // Initialize COM
+    HRESULT hrCom = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+    if (hrCom < 0) {
+        spdlog::warn("CoInitializeEx() failed - HRESULT: 0x{:X}", static_cast<unsigned long>(hrCom));
+    } else {
+        spdlog::info("CoInitializeEx() success - HRESULT: 0x{:X}", static_cast<unsigned long>(hrCom));
+    }
 
     // Game mapping
     std::map<std::string, std::string> games = {
