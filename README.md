@@ -14,6 +14,8 @@ You can still view the video on your system player inside the game folder at `Da
 
 Tested to resolve the crash issue when RTSS is open, but may also resolve the issue for other similar software.
 
+The launcher creates a log file in the game folder called `br-quartet-launcher.log`.
+
 ## Installation
 1. Download the latest [release](https://github.com/Braasileiro/br-quartet-launcher/releases/latest).
 2. Backup the original executable
@@ -45,6 +47,3 @@ If you want to boot straight into a specific game in the collection without havi
 * `ray` — Loads BLUE REFLECTION: Ray (`B2.dll`).
 * `sun` — Loads BLUE REFLECTION: Sun (`B3.dll`).
 * `tie` — Loads BLUE REFLECTION: Second Light (`B4.dll`).
-
-## Notes
-The launcher creates a log file in the game folder called `br-quartet-launcher.log`.
