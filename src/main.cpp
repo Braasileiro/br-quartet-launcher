@@ -59,7 +59,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR, _In
 
     // Initialize global logger
     Logger::Init(LOG_FILENAME, true);
-    spdlog::info("=====================================");
     spdlog::info("br-quartet-launcher {} initialized", APP_VERSION_STR);
     spdlog::info("Command line: {}", GetCommandLineA());
 
