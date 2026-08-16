@@ -16,14 +16,14 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "I love Mahou Shoujo Lyrical Nanoha\0"
-            VALUE "FileDescription", "BLUE REFLECTION Quartet Launcher Wrapper\0"
-            VALUE "FileVersion", APP_VERSION_STR "\0"
-            VALUE "InternalName", "br-quartet-launcher.exe \0"
-            VALUE "LegalCopyright", "Brasileiro\0"
-            VALUE "OriginalFilename", "br-quartet-launcher.exe\0"
-            VALUE "ProductName", "br-quartet-launcher\0"
-            VALUE "ProductVersion", APP_VERSION_STR "\0"
+            VALUE "CompanyName", "I love Mahou Shoujo Lyrical Nanoha"
+            VALUE "FileDescription", "BLUE REFLECTION Quartet Launcher Wrapper"
+            VALUE "FileVersion", APP_VERSION_STR
+            VALUE "InternalName", "br-quartet-launcher.exe"
+            VALUE "LegalCopyright", "Brasileiro"
+            VALUE "OriginalFilename", "br-quartet-launcher.exe"
+            VALUE "ProductName", "br-quartet-launcher"
+            VALUE "ProductVersion", APP_VERSION_STR
         END
     END
     BLOCK "VarFileInfo"
