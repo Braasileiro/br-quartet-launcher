@@ -1,0 +1,33 @@
+#include <winver.h>
+#include "../include/resources.h"
+
+IDI_ICON ICON   "icon.ico"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     APP_VERSION
+PRODUCTVERSION  APP_VERSION
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0x0L
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "CompanyName", "I love Mahou Shoujo Lyrical Nanoha\0"
+            VALUE "FileDescription", "BLUE REFLECTION Quartet Launcher Wrapper\0"
+            VALUE "FileVersion", APP_VERSION_STR "\0"
+            VALUE "InternalName", "br-quartet-launcher.exe \0"
+            VALUE "LegalCopyright", "Brasileiro\0"
+            VALUE "OriginalFilename", "br-quartet-launcher.exe\0"
+            VALUE "ProductName", "br-quartet-launcher\0"
+            VALUE "ProductVersion", APP_VERSION_STR "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
