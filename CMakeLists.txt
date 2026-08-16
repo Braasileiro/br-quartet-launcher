@@ -37,10 +37,10 @@ if(MINGW)
         -static
         -static-libgcc
         -static-libstdc++
-        "-Wl,--gc-sections"
+        "LINKER:--gc-sections"
     )
 
-    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_link_options(br_quartet_launcher PRIVATE -s)
-    endif()
+    target_link_options(br_quartet_launcher PRIVATE
+        $<$<NOT:$<CONFIG:Debug>>:-s>
+    )
 endif()
