@@ -33,8 +33,14 @@ If you want to boot straight into a specific game in the collection without havi
 3. Under the General tab, look for the **Launch Options** text box.
 4. Type your target game into the field (e.g., `tie` as shown below).
 
+### Simple
 <p align="center">
   <img src=".github/images/steam_launch_options.png">
+</p>
+
+### Linux / Environment Variables
+<p align="center">
+  <img src=".github/images/steam_launch_options_linux.png">
 </p>
 
 ## Available Arguments
