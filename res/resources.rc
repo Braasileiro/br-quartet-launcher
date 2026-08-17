@@ -1,5 +1,9 @@
 #include <winver.h>
+#include <winuser.h>
 #include "../include/resources.h"
+
+// Application manifest
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "app.manifest"
 
 IDI_ICON ICON   "icon.ico"
 
